@@ -1,0 +1,89 @@
+# crear super red de loopbacks
+29.8.98.16/30
+29.8.98.20/30
+29.8.98.24/30
+
+29.8.98.0001/0000
+29.8.98.0001/0100
+29.8.98.0001/1000
+
+# nueva mascara de red
+11111111.11111111.11111111.11110000
+/28
+255.255.255.240
+
+# Super red creada:
+29.8.98.16/28
+
+# config router UNO
+enable
+configure terminal
+hostname UNO
+no ip domain-lookup
+enable secret cisco
+line console 0
+login
+line vty 0 15
+password cisco
+login
+banner motd #!!! WARNING: Authorized personnel only. !!!#
+interface Se0/0
+description Enlace al router CERO
+ip address 29.8.98.9 255.255.255.252
+clock rate 128000
+no shut
+interface LO1
+ip address 29.8.98.17 255.255.255.252
+interface LO2
+ip address 29.8.98.21 255.255.255.252
+interface LO3
+ip address 29.8.98.25 255.255.255.252
+exit
+ip route 0.0.0.0 0.0.0.0 Se0/0
+
+# config router DOS
+enable
+configure terminal
+hostname DOS
+no ip domain-lookup
+enable secret cisco
+line console 0
+login
+line vty 0 15
+password cisco
+login
+banner motd #!!! WARNING: Authorized personnel only. !!!#
+interface Se0/0
+description Enlace al router CERO
+ip address 29.8.98.14 255.255.255.252
+clock rate 128000
+no shut
+interface Fa0/0
+description Red de computadoras
+ip address 29.8.98.1 255.255.255.248
+no shut
+ip route 0.0.0.0 0.0.0.0 Se0/0
+
+# config router CERO
+enable
+configure terminal
+hostname CERO
+no ip domain-lookup
+enable secret cisco
+line console 0
+login
+line vty 0 15
+password cisco
+login
+banner motd #!!! WARNING: Authorized personnel only. !!!#
+interface Se0/0
+description Enlace al router UNO
+ip address 29.8.98.10 255.255.255.252
+no shut
+interface Se0/1
+description Enlace al router DOS
+ip address 29.8.98.13 255.255.255.252
+no shut
+exit
+ip route 29.8.98.16 255.255.255.240 Se0/0
+ip route 29.8.98.0 255.255.255.248 29.8.98.14

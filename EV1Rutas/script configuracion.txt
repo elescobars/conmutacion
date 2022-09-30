@@ -1,0 +1,99 @@
+## CONFIGURACION BASICA
+
+# ROUTER ALUMNOS
+enable
+configure terminal
+hostname ALUMNOS
+no ip domain-lookup
+enable secret cisco
+line console 0
+login
+line vty 0 15
+password cisco
+login
+banner motd #Solo personal autorizado!#
+
+# ROUTER MAESTROS
+enable
+configure terminal
+hostname MAESTROS
+no ip domain-lookup
+enable secret cisco
+line console 0
+login
+line vty 0 15
+password cisco
+login
+banner motd #Solo personal autorizado!#
+
+# ROUTER EMPRESAS
+enable
+configure terminal
+hostname EMPRESAS
+no ip domain-lookup
+enable secret cisco
+line console 0
+login
+line vty 0 15
+password cisco
+login
+banner motd #Solo personal autorizado!#
+
+## CONFIGURACION DE INTERFACES
+
+# ROUTER ALUMNOS
+interface Se2/0
+ip address 192.168.2.1 255.255.255.0
+CLOCK RATE 128000
+no shutdown
+interface FA0/0
+ip address 192.168.1.3 255.255.0.0
+no shutdown
+exit
+
+# ROUTER MAESTROS
+interface Se2/0
+ip address 192.168.2.2 255.255.255.0
+no shutdown
+interface Se3/0
+ip address 192.168.4.1 255.255.255.0
+CLOCK RATE 128000
+no shutdown
+interface FA0/0
+ip address 192.168.3.3 255.255.255.0
+no shutdown
+exit
+
+# ROUTER EMPRESAS
+interface Se2/0
+ip address 192.168.4.2 255.255.255.0
+no shutdown
+INT LOOPBACK 1
+ip address 10.0.0.1 255.0.0.0
+exit
+
+## ENRUTAMIENTO ESTATICO
+
+# ROUTER ALUMNOS
+IP ROUTE 10.0.0.0 255.0.0.0 192.168.2.2
+IP ROUTE 192.168.3.0 255.255.255.0 192.168.2.2
+IP ROUTE 198.168.4.0 255.255.255.0 192.168.2.2
+
+# ROUTER MAESTROS
+IP ROUTE 10.0.0.0 255.0.0.0 192.168.4.2
+IP ROUTE 192.168.1.0 255.255.255.0 192.168.2.1
+
+# ROUTER EMPRESAS
+IP ROUTE 192.168.1.0 255.255.255.0 192.168.4.1
+IP ROUTE 192.168.2.0 255.255.255.0 192.168.4.1
+IP ROUTE 192.168.3.0 255.255.255.0 192.168.4.1
+
+# ELIMINAR LAS RUTAS ESTABLECIDAS
+NO IP ROUTE 10.0.0.0 255.0.0.0 192.168.2.2
+NO IP ROUTE 192.168.3.0 255.255.255.0 192.168.2.2
+NO IP ROUTE 198.168.4.0 255.255.255.0 192.168.2.2
+
+# CREAR UNA RUTA ESTATICA PREDETERMINADA
+IP ROUTE 0.0.0.0 0.0.0.0 {next hop comun para todas las direcciones}
+Ej. para el router de ALUMNOS
+IP ROUTE 0.0.0.0 0.0.0.0 192.168.2.2

@@ -1,0 +1,38 @@
+## CONFIGURACION BASICA
+# ROUTER ITC
+ena
+conf t
+hostname ITC
+no ip domain lookup
+banner motd #ACCESO SOLO A PESRONAL AUTORIZADO, SE APLICARAN SANCIONES#
+
+int FA0/0
+ipv6 unicast-routing
+int FA0/0
+ipv6 address CAFE:3::1/64
+no shut
+int se0/0/0
+ipv6 unicast-routing
+int se0/0/0
+ipv6 address CAFE:1::2/64
+clock rate 128000
+no shut
+
+# ROUTER ISC
+ena
+conf t
+hostname ISC
+no ip domain lookup
+banner motd #ACCESO SOLO A PESRONAL AUTORIZADO, SE APLICARAN SANCIONES#
+
+int LO1
+ipv6 unicast-routing
+int LO1
+ipv6 address CAFE:2::1/64
+int se0/0/0
+ipv6 unicast-routing
+int se0/0/0
+ipv6 address CAFE:1::1/64
+no shut
+
+ipv6 route ::/0 S0/0/0

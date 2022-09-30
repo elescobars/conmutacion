@@ -1,0 +1,142 @@
+## EJERCICIO DE SUMARIZACION DE RUTAS
+
+Router UNO
+200.35.65.0/25
+200.35.65.128/25
+
+200.35.65.00000000
+200.35.65.10000000
+
+Nueva mascara de red
+11111111.11111111.11111111.00000000
+/24
+Super red 1:
+200.35.65.0/24
+
+Router DOS
+200.35.67.0/26
+200.35.67.64/26
+
+200.35.67.00000000
+200.35.67.01000000
+
+Nueva mascara de red
+11111111.11111111.11111111.10000000
+/25
+Super red 2:
+200.35.67.0/25
+
+Router CUATRO
+200.35.68.128/26
+200.35.68.192/26
+
+200.35.68.10000000
+200.35.68.11000000
+
+Nueva mascara de red
+11111111.11111111.11111111.10000000
+/25
+Super red 3:
+200.35.68.128/25
+
+## SCRIPT DE CONFIGURACION
+
+# config router UNO
+enable
+configure terminal
+hostname UNO
+no ip domain-lookup
+enable secret cisco
+line console 0
+login
+line vty 0 15
+password cisco
+login
+banner motd #!!! WARNING: Authorized personnel only. !!!#
+interface Se0/0
+description Enlace al router TRES
+ip address 200.35.71.9 255.255.255.252
+clock rate 128000
+no shut
+interface LO1
+ip address 200.35.65.1 255.255.255.128
+interface LO2
+ip address 200.35.65.129 255.255.255.128
+exit
+ip route 0.0.0.0 0.0.0.0 Se0/0
+
+# config router DOS
+enable
+configure terminal
+hostname DOS
+no ip domain-lookup
+enable secret cisco
+line console 0
+login
+line vty 0 15
+password cisco
+login
+banner motd #!!! WARNING: Authorized personnel only. !!!#
+interface Se0/0
+description Enlace al router TRES
+ip address 200.35.71.2 255.255.255.252
+clock rate 128000
+no shut
+interface LO1
+ip address 200.35.67.1 255.255.255.192
+interface LO2
+ip address 200.35.67.65 255.255.255.192
+exit
+ip route 0.0.0.0 0.0.0.0 Se0/0
+
+# config router CUATRO
+enable
+configure terminal
+hostname CUATRO
+no ip domain-lookup
+enable secret cisco
+line console 0
+login
+line vty 0 15
+password cisco
+login
+banner motd #!!! WARNING: Authorized personnel only. !!!#
+interface Se0/0
+description Enlace al router TRES
+ip address 200.35.71.6 255.255.255.252
+no shut
+interface LO1
+ip address 200.35.68.129 255.255.255.192
+interface LO2
+ip address 200.35.68.193 255.255.255.192
+exit
+ip route 0.0.0.0 0.0.0.0 Se0/0
+
+# config router TRES
+enable
+configure terminal
+hostname TRES
+no ip domain-lookup
+enable secret cisco
+line console 0
+login
+line vty 0 15
+password cisco
+login
+banner motd #!!! WARNING: Authorized personnel only. !!!#
+interface Se0/0
+description Enlace al router UNO
+ip address 200.35.71.10 255.255.255.252
+no shut
+interface Se0/1
+description Enlace al router DOS
+ip address 200.35.71.1 255.255.255.252
+no shut
+interface Se0/2
+description Enlace al router CUATRO
+ip address 200.35.71.5 255.255.255.252
+no shut
+exit
+ip route 200.35.65.0 255.255.255.0 Se0/0
+ip route 200.35.67.0 255.255.255.128 Se0/1
+ip route 200.35.68.128 255.255.255.128 Se0/2

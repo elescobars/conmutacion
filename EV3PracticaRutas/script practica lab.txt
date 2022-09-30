@@ -1,0 +1,102 @@
+# ROUTER R1
+enable
+configure terminal
+hostname R1
+no ip domain-lookup
+enable secret cisco
+line console 0
+login
+line vty 0 15
+password cisco
+login
+banner motd #Solo personal autorizado!#
+
+# INTERFACES R1
+interface Se0/0/0
+description Enlace a R2
+ip address 192.168.1.2 255.255.255.252
+CLOCK RATE 128000
+no shutdown
+interface Se0/0/1
+ip address 192.168.1.5 255.255.255.252
+no shutdown
+interface FA0/0
+ip address 172.16.0.1 255.255.255.0
+no shutdown
+interface Loopback 1
+ip address 12.0.0.1 255.255.255.252
+exit
+
+# RUTAS R1
+IP ROUTE 10.0.0.0 255.255.255.252 192.168.1.1
+IP ROUTE 11.0.0.0 255.255.255.252 192.168.1.6
+IP ROUTE 174.16.0.0 255.255.255.192 192.168.1.1
+IP ROUTE 173.16.0.0 255.255.255.128 192.168.1.6
+
+# ROUTER R2
+enable
+configure terminal
+hostname R2
+no ip domain-lookup
+enable secret cisco
+line console 0
+login
+line vty 0 15
+password cisco
+login
+banner motd #Solo personal autorizado!#
+
+# INTERFACES R2
+interface Se0/0/0
+description Enlace a R1
+ip address 192.168.1.1 255.255.255.252
+no shutdown
+interface FA0/0
+ip address 174.16.0.1 255.255.255.192
+no shutdown
+interface Loopback 1
+ip address 10.0.0.1 255.255.255.252
+exit
+
+# RUTAS R2
+IP ROUTE 12.0.0.0 255.255.255.252 192.168.1.2
+IP ROUTE 11.0.0.0 255.255.255.252 192.168.1.2
+IP ROUTE 172.16.0.0 255.255.255.0 192.168.1.2
+IP ROUTE 173.16.0.0 255.255.255.128 192.168.1.2
+IP ROUTE 192.168.1.4 255.255.255.252 192.168.1.2
+
+# ROUTER R3
+enable
+configure terminal
+hostname R3
+no ip domain-lookup
+enable secret cisco
+line console 0
+login
+line vty 0 15
+password cisco
+login
+banner motd #Solo personal autorizado!#
+
+# INTERFACES R3
+interface Se0/0/0
+description Enlace a R1
+ip address 192.168.1.6 255.255.255.252
+CLOCK RATE 128000
+no shutdown
+interface FA0/0
+ip address 173.16.0.1 255.255.255.128
+no shutdown
+interface Loopback 1
+ip address 11.0.0.1 255.255.255.252
+exit
+
+# RUTAS R3
+IP ROUTE 10.0.0.0 255.255.255.252 192.168.1.5
+IP ROUTE 12.0.0.0 255.255.255.252 192.168.1.5
+IP ROUTE 172.16.0.0 255.255.255.0 192.168.1.5
+IP ROUTE 174.16.0.0 255.255.255.192 192.168.1.5
+IP ROUTE 192.168.1.0 255.255.255.252 192.168.1.5
+
+# almacenar la configuracion para poder reiniciar el router
+copy running-config startup-config
